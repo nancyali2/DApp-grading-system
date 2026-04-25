@@ -1,0 +1,1 @@
+A blockchain-based grading system that allows academic results to be securely recorded, stored, and verified using smart contracts. This removes the need for a central authority and ensures transparency, integrity, and trust in the grading process.
