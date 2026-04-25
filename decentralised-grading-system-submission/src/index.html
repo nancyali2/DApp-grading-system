@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decentralised Grading System — IIT Bombay</title>
+
+  <!-- Bootstrap 4 -->
+  <link href="vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    /* ---- Layout ---- */
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+    }
+
+    /* ---- Left Navigation Sidebar ---- */
+    .sidenav {
+      height: 100%;
+      width: 220px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: #1a1a2e;
+      overflow-y: auto;
+      padding-top: 0;
+      z-index: 100;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+    }
+
+    .sidenav .brand {
+      display: block;
+      padding: 20px 16px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #7b8ab8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid #2a2a4a;
+      margin-bottom: 8px;
+    }
+
+    .sidenav h2 {
+      padding: 10px 16px 18px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      text-align: center;
+      border-bottom: 1px solid #2a2a4a;
+      margin: 0;
+    }
+
+    .sidenav a.role-link {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      font-size: 15px;
+      color: #8a8fb5;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .sidenav a.role-link:hover {
+      background: #2a2a4a;
+      color: #ffffff;
+      border-left-color: #4a9eff;
+    }
+
+    .sidenav a.role-link.active {
+      background: #16213e;
+      color: #ffffff;
+      border-left-color: #e94560;
+      font-weight: 600;
+    }
+
+    .sidenav .role-icon {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    /* ---- Right Function Panel ---- */
+    .sidebar {
+      width: 230px;
+      background: #16213e;
+      position: fixed;
+      right: 0;
+      top: 0;
+      z-index: 100;
+      height: 100%;
+      overflow-y: auto;
+      padding-top: 0;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.3);
+    }
+
+    .sidebar h2 {
+      padding: 20px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #7b8ab8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid #2a2a4a;
+      margin: 0;
+    }
+
+    .sidebar a.fn-link {
+      display: block;
+      padding: 12px 20px;
+      font-size: 13px;
+      color: #8a9bc5;
+      text-decoration: none;
+      font-family: 'Courier New', monospace;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .sidebar a.fn-link:hover {
+      background: #1f2d50;
+      color: #ffffff;
+      border-left-color: #4a9eff;
+    }
+
+    .sidebar a.fn-link.active {
+      background: #0f3460;
+      color: #ffffff;
+      border-left-color: #e94560;
+    }
+
+    /* ---- Main Content Area ---- */
+    .main {
+      margin-left: 220px;
+      margin-right: 230px;
+      padding: 30px 40px;
+      min-height: 100vh;
+    }
+
+    /* ---- Status Bar ---- */
+    #statusBar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-radius: 4px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      padding: 10px 16px;
+      display: none;
+    }
+
+    /* ---- Welcome Screen ---- */
+    #welcomeScreen {
+      text-align: center;
+      padding: 60px 20px;
+      color: #888;
+    }
+
+    #welcomeScreen h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+    }
+
+    #welcomeScreen p {
+      font-size: 15px;
+      max-width: 500px;
+      margin: 0 auto 24px;
+    }
+
+    #welcomeScreen .badge-tech {
+      display: inline-block;
+      background: #e8f0fe;
+      color: #1a73e8;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      margin: 4px;
+    }
+
+    /* ---- Forms ---- */
+    .FunctionForm {
+      background: #fff;
+      border-radius: 8px;
+      padding: 28px 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      max-width: 640px;
+    }
+
+    .FunctionForm h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f0f2f5;
+      font-family: 'Courier New', monospace;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 4px;
+    }
+
+    .form-hint {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .form-control {
+      font-size: 13px;
+      border: 1px solid #dde0e7;
+      border-radius: 4px;
+      padding: 8px 12px;
+    }
+
+    .form-control:focus {
+      border-color: #4a9eff;
+      box-shadow: 0 0 0 2px rgba(74,158,255,0.15);
+    }
+
+    .btn-submit {
+      background: #e94560;
+      color: #fff;
+      border: none;
+      padding: 10px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 4px;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover {
+      background: #c73650;
+    }
+
+    /* ---- Result Textarea ---- */
+    .result-area {
+      margin-top: 20px;
+      border-top: 1px solid #f0f2f5;
+      padding-top: 16px;
+    }
+
+    .result-area label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    textarea.resultText {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      background: #f8f9fc;
+      border: 1px solid #e0e4ed;
+      border-radius: 4px;
+      resize: vertical;
+    }
+
+    /* ---- Account badge ---- */
+    #accountBadge {
+      font-size: 11px;
+      color: #aaa;
+      padding: 10px 16px;
+      border-top: 1px solid #2a2a4a;
+      word-break: break-all;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 220px;
+      background: #1a1a2e;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ========== LEFT SIDEBAR — Role Selection ========== -->
+  <div class="sidenav">
+    <h2>&#128203; Grading DApp</h2>
+    <span class="brand">Select Your Role</span>
+
+    <a href="javascript:void(0)" class="role-link Admin">
+      <span class="role-icon">&#128737;</span> Admin
+    </a>
+    <a href="javascript:void(0)" class="role-link Professor">
+      <span class="role-icon">&#128104;&#8205;&#127979;</span> Professor
+    </a>
+    <a href="javascript:void(0)" class="role-link TA">
+      <span class="role-icon">&#128101;</span> Teaching Assistant
+    </a>
+    <a href="javascript:void(0)" class="role-link Student">
+      <span class="role-icon">&#127891;</span> Student
+    </a>
+
+    <div id="accountBadge">&#128274; Not connected</div>
+  </div>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <div class="main">
+
+    <!-- Status bar (shown on connect / error / success) -->
+    <div id="statusBar"></div>
+
+    <!-- Welcome screen — shown when no form is active -->
+    <div id="welcomeScreen">
+      <h1>Decentralised Grading System</h1>
+      <p>A blockchain-based academic grading DApp built on Ethereum </p>
+      <div>
+        <span class="badge-tech">Ethereum</span>
+        <span class="badge-tech">Solidity</span>
+        <span class="badge-tech">Truffle</span>
+        <span class="badge-tech">Web3.js</span>
+        <span class="badge-tech">MetaMask</span>
+      </div>
+      <p style="margin-top:24px; font-size:13px;">&#8592; Select your role from the left panel to get started.</p>
+    </div>
+
+    <!-- ---- Admin: Add Instructors ---- -->
+    <div id="addInstructorForm" class="FunctionForm collapse">
+      <h4>addInstructor(address[])</h4>
+      <form class="formClass" onsubmit="App.addInstructorFun(); return false;">
+        <div class="form-group">
+          <label class="form-label">Instructor Ethereum Addresses</label>
+          <input class="form-control" id="addInstructorInp0" placeholder="0xabc..., 0xdef...">
+          <div class="form-hint">Comma-separated list of wallet addresses to register as instructors.</div>
+        </div>
+        <button type="submit" class="btn-submit">Register Instructors</button>
+      </form>
+    </div>
+
+    <!-- ---- Admin: Get Instructors List ---- -->
+    <div id="getInstructorsListForm" class="FunctionForm collapse">
+      <h4>getInstructorsList()</h4>
+      <form class="formClass" onsubmit="App.getInstructorsListFun(); return false;">
+        <p style="font-size:14px; color:#555;">Returns all Ethereum addresses currently registered as instructors.</p>
+        <button type="submit" class="btn-submit">Fetch List</button>
+        <div class="result-area">
+          <label>Registered Instructors</label>
+          <textarea class="resultText form-control" id="getInstructorsListResult" rows="5" disabled></textarea>
+        </div>
+      </form>
+    </div>
+
+    <!-- ---- Professor: Add Course ---- -->
+    <div id="addCourseForm" class="FunctionForm collapse">
+      <h4>addCourse(courseID, name, rolls, addrs, TAs)</h4>
+      <form class="formClass" onsubmit="App.addCourseFun(); return false;">
+        <div class="form-group">
+          <label class="form-label">Course ID</label>
+          <input class="form-control" id="addCourseInp0" placeholder="EE465">
+          <div class="form-hint">Short unique identifier, e.g. EE465 or CS101.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Course Name</label>
+          <input class="form-control" id="addCourseInp1" placeholder="Cryptocurrency and Blockchain Technology">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Student Roll Numbers</label>
+          <input class="form-control" id="addCourseInp2" placeholder="190010001, 190010002, 190010003">
+          <div class="form-hint">Comma-separated roll numbers in the same order as addresses below.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Student Ethereum Addresses</label>
+          <input class="form-control" id="addCourseInp3" placeholder="0xabc..., 0xdef..., 0x123...">
+          <div class="form-hint">One address per student, matching the roll number order above.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">TA Ethereum Addresses</label>
+          <input class="form-control" id="addCourseInp4" placeholder="0xta1..., 0xta2...">
+          <div class="form-hint">Leave blank if no TAs. TAs can add/update marks but not calculate grades.</div>
+        </div>
+        <button type="submit" class="btn-submit">Create Course</button>
+      </form>
+    </div>
+
+    <!-- ---- Professor / TA: Add Exam ---- -->
+    <div id="addExamForm" class="FunctionForm collapse">
+      <h4>addExam(courseID, examID, maxMarks, rolls, marks)</h4>
+      <form class="formClass" onsubmit="App.addExamFun(); return false;">
+        <div class="form-group">
+          <label class="form-label">Course ID</label>
+          <input class="form-control" id="addExamInp0" placeholder="EE465">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Exam ID</label>
+          <input class="form-control" id="addExamInp1" placeholder="midsem">
+          <div class="form-hint">e.g. quiz1, midsem, endsem. Must be unique within the course.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Maximum Marks</label>
+          <input class="form-control" id="addExamInp2" placeholder="50" type="number" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Roll Numbers</label>
+          <input class="form-control" id="addExamInp3" placeholder="190010001, 190010002, 190010003">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Marks Obtained</label>
+          <input class="form-control" id="addExamInp4" placeholder="42, 35, 48">
+          <div class="form-hint">Comma-separated marks in the same order as roll numbers above.</div>
+        </div>
+        <button type="submit" class="btn-submit">Submit Exam Marks</button>
+      </form>
+    </div>
+
+    <!-- ---- Professor / TA: Update Marks ---- -->
+    <div id="updateMarksForm" class="FunctionForm collapse">
+      <h4>updateMarks(courseID, examID, rolls, marks)</h4>
+      <form class="formClass" onsubmit="App.updateMarksFun(); return false;">
+        <div class="form-group">
+          <label class="form-label">Course ID</label>
+          <input class="form-control" id="updateMarksInp0" placeholder="EE465">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Exam ID</label>
+          <input class="form-control" id="updateMarksInp1" placeholder="midsem">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Roll Numbers to Update</label>
+          <input class="form-control" id="updateMarksInp2" placeholder="190010002">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Corrected Marks</label>
+          <input class="form-control" id="updateMarksInp3" placeholder="38">
+          <div class="form-hint">Only supply roll numbers where corrections are needed.</div>
+        </div>
+        <button type="submit" class="btn-submit">Update Marks</button>
+      </form>
+    </div>
+
+    <!-- ---- Professor: Calculate Grades ---- -->
+    <div id="calculateGradesForm" class="FunctionForm collapse">
+      <h4>calculateGrades(courseID, weightages, cutoffs)</h4>
+      <form class="formClass" onsubmit="App.calculateGradesFun(); return false;">
+        <div class="form-group">
+          <label class="form-label">Course ID</label>
+          <input class="form-control" id="calculateGradesInp0" placeholder="EE465">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Exam Weightages (%)</label>
+          <input class="form-control" id="calculateGradesInp1" placeholder="10, 30, 60">
+          <div class="form-hint">One value per exam in the order they were added. Must sum to 100.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Grade Cutoffs (descending)</label>
+          <input class="form-control" id="calculateGradesInp2" placeholder="85, 75, 65, 55, 45, 35, 25">
+          <div class="form-hint">Seven cutoffs for: AA, AB, BB, BC, CC, CD, DD. Must be strictly descending.</div>
+        </div>
+        <button type="submit" class="btn-submit">Calculate Grades</button>
+      </form>
+    </div>
+
+    <!-- ---- Professor: Get Exam Marks ---- -->
+    <div id="getProfExamMarksForm" class="FunctionForm collapse">
+      <h4>getProfExamMarks(courseID, examID)</h4>
+      <form class="formClass" onsubmit="App.getProfExamMarksFun(); return false;">
+        <div class="form-group">
+          <label class="form-label">Course ID</label>
+          <input class="form-control" id="getProfExamMarksInp0" placeholder="EE465">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Exam ID</label>
+          <input class="form-control" id="getProfExamMarksInp1" placeholder="midsem">
+        </div>
+        <button type="submit" class="btn-submit">Fetch Marks</button>
+        <div class="result-area">
+          <label>Mark Sheet</label>
+          <textarea class="resultText form-control" id="getProfExamMarksResult" rows="8" disabled></textarea>
+        </div>
+      </form>
+    </div>
+
+    <!-- ---- Professor: Get Exam Weightages ---- -->
+    <div id="getProfExamWeightagesForm" class="FunctionForm collapse">
+      <h4>getProfExamWeightages(courseID)</h4>
+      <form class="formClass" onsubmit="App.getProfExamWeightagesFun(); return false;">
+        <div class="form-group">
+          <label class="form-label">Course ID</label>
+          <input class="form-control" id="getProfExamWeightagesInp0" placeholder="EE465">
+        </div>
+        <button type="submit" class="btn-submit">Fetch Weightages</button>
+        <div class="result-area">
+          <label>Exam Breakdown</label>
+          <textarea class="resultText form-control" id="getProfExamWeightagesResult" rows="6" disabled></textarea>
+        </div>
+      </form>
+    </div>
+
+    <!-- ---- Professor: Get All Grades ---- -->
+    <div id="getProfMarksGradesForm" class="FunctionForm collapse">
+      <h4>getProfMarksGrades(courseID)</h4>
+      <form class="formClass" onsubmit="App.getProfMarksGradesFun(); return false;">
+        <div class="form-group">
+          <label class="form-label">Course ID</label>
+          <input class="form-control" id="getProfMarksGradesInp0" placeholder="EE465">
+        </div>
+        <button type="submit" class="btn-submit">Fetch Grade Sheet</button>
+        <div class="result-area">
+          <label>Final Grade Sheet</label>
+          <textarea class="resultText form-control" id="getProfMarksGradesFormResult" rows="10" disabled></textarea>
+        </div>
+      </form>
+    </div>
+
+    <!-- ---- Student: Get My Marks & Grade ---- -->
+    <div id="getStudentMarksGradesForm" class="FunctionForm collapse">
+      <h4>getStudentMarksGrades(courseID, rollNo)</h4>
+      <form class="formClass" onsubmit="App.getStudentMarksGradesFun(); return false;">
+        <div class="form-group">
+          <label class="form-label">Course ID</label>
+          <input class="form-control" id="getStudentMarksGradesInp0" placeholder="EE465">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your Roll Number</label>
+          <input class="form-control" id="getStudentMarksGradesInp1" placeholder="190010001">
+          <div class="form-hint">You can only view your own record. The contract will reject requests for other students.</div>
+        </div>
+        <button type="submit" class="btn-submit">View My Result</button>
+        <div class="result-area">
+          <label>Your Result</label>
+          <textarea class="resultText form-control" id="getStudentMarksGradesResult" rows="10" disabled></textarea>
+        </div>
+      </form>
+    </div>
+
+  </div><!-- /.main -->
+
+
+  <!-- ========== RIGHT SIDEBAR — Function Panels (shown per role) ========== -->
+
+  <div id="AdminRight" class="rightSidebar collapse">
+    <div class="sidebar">
+      <h2>&#128737; Admin Functions</h2>
+      <a href="javascript:void(0)" class="fn-link AdminFunction1">addInstructor</a>
+      <a href="javascript:void(0)" class="fn-link AdminFunction2">getInstructorsList</a>
+    </div>
+  </div>
+
+  <div id="ProfRight" class="rightSidebar collapse">
+    <div class="sidebar">
+      <h2>&#128104;&#8205;&#127979; Professor Functions</h2>
+      <a href="javascript:void(0)" class="fn-link ProfFunction1">addCourse</a>
+      <a href="javascript:void(0)" class="fn-link ProfFunction2">addExam</a>
+      <a href="javascript:void(0)" class="fn-link ProfFunction3">calculateGrades</a>
+      <a href="javascript:void(0)" class="fn-link ProfFunction4">updateMarks</a>
+      <a href="javascript:void(0)" class="fn-link ProfFunction5">getProfExamMarks</a>
+      <a href="javascript:void(0)" class="fn-link ProfFunction6">getProfExamWeightages</a>
+      <a href="javascript:void(0)" class="fn-link ProfFunction7">getProfMarksGrades</a>
+    </div>
+  </div>
+
+  <div id="TARight" class="rightSidebar collapse">
+    <div class="sidebar">
+      <h2>&#128101; TA Functions</h2>
+      <a href="javascript:void(0)" class="fn-link TAFunction1">addExam</a>
+      <a href="javascript:void(0)" class="fn-link TAFunction2">updateMarks</a>
+    </div>
+  </div>
+
+  <div id="StudentRight" class="rightSidebar collapse">
+    <div class="sidebar">
+      <h2>&#127891; Student Functions</h2>
+      <a href="javascript:void(0)" class="fn-link StudentFunction1">getStudentMarksGrades</a>
+    </div>
+  </div>
+
+
+  <!-- ========== Scripts ========== -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@0.20.7/dist/web3.min.js"></script>
+<script src="vendor/truffle-contract/dist/truffle-contract.js"></script>
+<script src="app.js"></script>
+
+  <script>
+    $(document).ready(function () {
+
+      // --- Role navigation ---
+      $(".role-link").click(function () {
+        $(".role-link").removeClass("active");
+        $(this).addClass("active");
+        $(".rightSidebar").collapse("hide");
+        $(".FunctionForm").collapse("hide");
+        $(".resultText").val("");
+        $("#welcomeScreen").hide();
+      });
+
+      $(".Admin").click(function ()     { $("#AdminRight").collapse("show"); });
+      $(".Professor").click(function () { $("#ProfRight").collapse("show");  });
+      $(".TA").click(function ()        { $("#TARight").collapse("show");    });
+      $(".Student").click(function ()   { $("#StudentRight").collapse("show"); });
+
+      // --- Function panel item clicks ---
+      $(".fn-link").click(function () {
+        $(".fn-link").removeClass("active");
+        $(this).addClass("active");
+        $(".FunctionForm").collapse("hide");
+        $(".resultText").val("");
+      });
+
+      // Admin
+      $(".AdminFunction1").click(function () { $("#addInstructorForm").collapse("show"); });
+      $(".AdminFunction2").click(function () { $("#getInstructorsListForm").collapse("show"); });
+
+      // Professor
+      $(".ProfFunction1").click(function () { $("#addCourseForm").collapse("show"); });
+      $(".ProfFunction2").click(function () { $("#addExamForm").collapse("show"); });
+      $(".ProfFunction3").click(function () { $("#calculateGradesForm").collapse("show"); });
+      $(".ProfFunction4").click(function () { $("#updateMarksForm").collapse("show"); });
+      $(".ProfFunction5").click(function () { $("#getProfExamMarksForm").collapse("show"); });
+      $(".ProfFunction6").click(function () { $("#getProfExamWeightagesForm").collapse("show"); });
+      $(".ProfFunction7").click(function () { $("#getProfMarksGradesForm").collapse("show"); });
+
+      // TA
+      $(".TAFunction1").click(function () { $("#addExamForm").collapse("show"); });
+      $(".TAFunction2").click(function () { $("#updateMarksForm").collapse("show"); });
+
+      // Student
+      $(".StudentFunction1").click(function () { $("#getStudentMarksGradesForm").collapse("show"); });
+
+      // Update account badge when app loads
+      $(window).on("load", function () {
+        // Poll for App.account (set asynchronously)
+        const poll = setInterval(function () {
+          if (App.account) {
+            $("#accountBadge").html("&#128274; " + App.account.slice(0, 10) + "..." + App.account.slice(-4));
+            clearInterval(poll);
+          }
+        }, 500);
+      });
+    });
+  </script>
+
+</body>
+</html>

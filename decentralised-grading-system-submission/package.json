@@ -1,0 +1,47 @@
+{
+  "name": "decentralised-grading-system",
+  "version": "1.0.0",
+  "description": "Blockchain-based student grading DApp built on Ethereum for IIT Bombay (EE 465, Autumn 2019)",
+  "main": "truffle-config.js",
+  "scripts": {
+    "dev": "lite-server",
+    "compile": "truffle compile",
+    "migrate": "truffle migrate --reset",
+    "test": "truffle test",
+    "build": "truffle compile && truffle migrate --reset",
+    "console": "truffle console",
+    "check": "truffle exec scripts/check_network.js",
+    "demo": "truffle exec scripts/demo.js"
+  },
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "solidity",
+    "truffle",
+    "dapp",
+    "grading",
+    "smart-contract",
+    "web3"
+  ],
+  "author": "Saiteja Talluri <saiteja-talluri@github> and Pavan Bhargav <Pa1Bhargav@github>",
+  "license": "MIT",
+  "devDependencies": {
+    "bootstrap": "^4.3.1",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-bignumber": "^2.0.2",
+    "lite-server": "^2.3.0",
+    "nodemon": "^1.19.1",
+    "truffle": "5.0.2",
+    "truffle-contract": "3.0.6",
+    "web3": "^1.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saiteja-talluri/decentralised-grading-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/saiteja-talluri/decentralised-grading-system/issues"
+  },
+  "homepage": "https://github.com/saiteja-talluri/decentralised-grading-system#readme"
+}

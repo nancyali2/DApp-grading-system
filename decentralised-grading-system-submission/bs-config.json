@@ -1,0 +1,19 @@
+{
+  "server": {
+    "baseDir": ["./src", "./build/contracts"],
+    "routes": {
+      "/vendor": "./node_modules"
+    },
+    "middleware": {
+      "0": null
+    }
+  },
+  "port": 3000,
+  "open": true,
+  "notify": false,
+  "reloadOnRestart": true,
+  "logLevel": "info",
+  "logPrefix": "GradingDApp",
+  "logConnections": false,
+  "logFileChanges": true
+}
